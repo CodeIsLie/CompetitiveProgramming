@@ -198,8 +198,32 @@ void pigsWolves(){
     cout << wolvesWithPig;
 }
 
+void boysGirls(){
+    int n, m;
+    ifstream ifs("input.txt");
+    ifs >> n >> m;
+
+    string line = "";
+    if (n > m){
+        for (int i = 0; i < m; ++i){
+            line += "BG";
+        }
+        line += string(n-m, 'B');
+    }
+    else{
+        for (int i = 0; i < n; ++i){
+            line += "GB";
+        }
+        line += string(m-n, 'G');
+    }
+
+
+    ofstream ofs("output.txt");
+    ofs << line;
+}
+
 
 int main() {
-    pigsWolves();
+    boysGirls();
     return 0;
 }
