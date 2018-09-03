@@ -223,7 +223,7 @@ void boysGirls(){
 }
 
 
-int main() {
+int main2() {
     boysGirls();
     return 0;
 }
