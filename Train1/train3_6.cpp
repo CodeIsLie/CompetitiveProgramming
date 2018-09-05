@@ -31,7 +31,7 @@ void condensation(){
     printf("%d ", cntEdges);
 }
 
-int main(){
+int main6(){
     condensation();
     return 0;
 }
