@@ -37,7 +37,6 @@ void findCycle() {
         cin >> v >> to;
         graph[v].push_back(to);
     }
-    fclose(stdin);
 
     bool cycleV = false;
     vector<char> used(n+1, 0);
@@ -69,7 +68,7 @@ void findCycle() {
 }
 
 
-int main(){
+int main3_2(){
     findCycle();
     return 0;
 }

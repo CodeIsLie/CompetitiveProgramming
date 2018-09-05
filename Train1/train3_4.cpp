@@ -38,16 +38,15 @@ void dfs (int v, int p = -1) {
 int main() {
     freopen("points.in", "r", stdin);
     int n, m;
-    cin >> n >> m;
+    scanf("%d%d", &n, &m);
     graph = vector<vector<int>>(n+1);
 
     int v, to;
     for (int i = 0; i < m; ++i){
-        cin >> v >> to;
+        scanf("%d%d", &v, &to);
         graph[v].push_back(to);
         graph[to].push_back(v);
     }
-    fclose(stdin);
 
     used.resize(n+1);
     tin.resize(n+1);
@@ -62,7 +61,10 @@ int main() {
     }
 
     freopen("points.out", "w", stdout);
-    cout << cutpoints.size() << endl;
+    printf("%d \n", cutpoints.size());
     for (int p: cutpoints)
-        cout << p << ' ';
+    {
+        printf("%d ", p);
+    }
+
 }

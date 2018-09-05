@@ -1,4 +1,3 @@
-
  #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -43,20 +42,18 @@ void find_bridges(int n) {
             dfs (i);
 }
 
-
 void get_bridges(){
     freopen("bridges.in", "r", stdin);
     int n, m;
-    cin >> n >> m;
+    scanf("%d%d", &n, &m);
     graph = vector<vector<pair<int, int>>>(n+1);
 
     int v, to;
     for (int i = 1; i < m+1; ++i){
-        cin >> v >> to;
+        scanf("%d%d", &v, &to);
         graph[v].emplace_back(to, i);
         graph[to].emplace_back(v, i);
     }
-    fclose(stdin);
 
     used.resize(n+1);
     tin.resize(n+1);
@@ -64,10 +61,10 @@ void get_bridges(){
     find_bridges(n);
 
     freopen("bridges.out", "w", stdout);
-    cout << bridges.size() << endl;
+    printf("%d ", bridges.size());
     sort(bridges.begin(), bridges.end());
     for (int b: bridges)
-        cout << b << endl;
+        printf("%d ", b);
 }
 
 int main(){
