@@ -54,8 +54,14 @@ void longPath(){
         }
     }
 
+    int maxPath = 0;
+    for (int i = 1; i <= n; ++i){
+        if (pathLengths[i] > maxPath)
+            maxPath = pathLengths[i];
+    }
+
     freopen("longpath.out", "w", stdout);
-    printf("%d ", pathLengths[n]);
+    printf("%d ", maxPath);
 }
 
 int main(){
