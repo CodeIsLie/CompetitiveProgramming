@@ -9,7 +9,6 @@
 using namespace std;
 
 void slalom(){
-    freopen("slalom.in", "r", stdin);
     int n;
     scanf("%d", &n);
     vector<vector<int>> weights(n, vector<int>(n, 0));
@@ -27,7 +26,6 @@ void slalom(){
         }
     }
 
-    freopen("slalom.out", "w", stdout);
     printf("%d ", weights[0][0]);
 }
 
