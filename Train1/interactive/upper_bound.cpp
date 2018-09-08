@@ -2,8 +2,6 @@
 // Created by admin on 08.09.2018.
 //
 
-// #define FILE2 "joseph"
-
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
@@ -15,11 +13,6 @@
 using namespace std;
 
 void lowerBound(){
-#ifdef FILE2
-    freopen(FILE2".in", "r", stdin);
-    freopen(FILE2".out", "w", stdout);
-#endif
-
     int n, start, x;
     cin >> n >> start >> x;
 
@@ -103,21 +96,7 @@ void lowerBound(){
 
 int main(){
     srand(time(0));
-    // lowerBound();
-    vector<pair<int, int>> sortTest;
-    sortTest.push_back(make_pair(6, 2));
-    sortTest.push_back(make_pair(6, 1));
-    sortTest.push_back(make_pair(3, 1));
-    sortTest.push_back(make_pair(2, 2));
-    for (auto p: sortTest){
-        cout << p.first << ' ' << p.second << endl;
-    }
-    cout <<endl;
 
-    sort(sortTest.begin(), sortTest.end());
-    for (auto p: sortTest){
-        cout << p.first << ' ' << p.second << endl;
-    }
-
+    lowerBound();
     return 0;
 }
