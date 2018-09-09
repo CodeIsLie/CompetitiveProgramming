@@ -18,7 +18,7 @@ void lowerBound(){
 
     vector<pair<int, int>> values;
     int maxQueries = 1999;
-    int rndQueries = 1000;
+    int rndQueries = 1111;
     int listQueries = maxQueries - rndQueries;
 
     int xi, next;
@@ -41,11 +41,15 @@ void lowerBound(){
         }
     } else{
         // do rndQueries, find (x1, x2)| x1 < x, x < x2
-        // next, from x1, find first >= x
+        // then, from x1, find first >= x
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(1, n);
+
         set<int> indexes;
         indexes.insert(start);
         for (int i = 0; i < rndQueries-1; ++i) {
-            int index = 1 + (rand() % n);
+            int index = dis(gen);
             indexes.insert(index);
         }
 
@@ -95,8 +99,6 @@ void lowerBound(){
 }
 
 int main(){
-    srand(time(0));
-
     lowerBound();
     return 0;
 }
