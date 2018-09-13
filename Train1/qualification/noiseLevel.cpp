@@ -12,34 +12,11 @@
 using namespace std;
 
 vector<string> blocks;
-vector<vector<int>> noise;
+vector<vector<long long>> noise;
 vector<vector<int>> used;
 
 //for different marks in used
 int True;
-
-inline
-bool isCorrect(int i, int j){
-    return blocks[i][j] != '*';
-}
-
-inline
-vector<pair<int, int>> getNeighbors(int i, int j){
-    vector<pair<int, int>> neighbors;
-    if (isCorrect(i-1, j)){
-        neighbors.emplace_back(i-1, j);
-    }
-    if (isCorrect(i+1, j)){
-        neighbors.emplace_back(i+1, j);
-    }
-    if (isCorrect(i, j-1)){
-        neighbors.emplace_back(i, j-1);
-    }
-    if (isCorrect(i, j+1)){
-        neighbors.emplace_back(i, j+1);
-    }
-    return move(neighbors);
-}
 
 void BFS(int i, int j, int noiseSize){
     queue<pair<pair<int, int>, int>> q;
@@ -50,11 +27,13 @@ void BFS(int i, int j, int noiseSize){
         auto p = q.front();
         q.pop();
         auto coords = p.first;
+        i = coords.first;
+        j = coords.second;
         noiseSize = p.second;
         noise[coords.first][coords.second] += noiseSize;
 
-        for (auto pr: getNeighbors(coords.first, coords.second)){
-            if (used[pr.first][pr.second] != True && noiseSize/2 > 0) {
+        for (pair<int, int> pr: {make_pair(i-1, j), make_pair(i+1, j), make_pair(i, j-1), make_pair(i, j+1)}){
+            if (blocks[pr.first][pr.second]!= '*' && used[pr.first][pr.second] != True && noiseSize/2 > 0) {
                 used[pr.first][pr.second] = True;
                 q.emplace(pr, noiseSize / 2);
             }
@@ -71,7 +50,7 @@ void noiseLevel() {
     cin >> n >> m >> q >> p;
 
     string line;
-    noise.assign(n+2, vector<int>(m+2, 0));
+    noise.assign(n+2, vector<long long>(m+2, 0));
     used.assign(n+2, vector<int>(m+2, 0));
 
     blocks.push_back(string(m+2, '*'));
@@ -105,5 +84,12 @@ void noiseLevel() {
 
 int main(){
     noiseLevel();
+//    freopen("../input.txt", "w", stdout);
+//    for (int i = 0; i < 250; ++i){
+//        for (int j = 0; j < 250; ++j){
+//            cout << "Z";
+//        }
+//        cout << endl;
+//    }
     return 0;
 }
