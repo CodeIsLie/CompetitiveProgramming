@@ -20,12 +20,9 @@ void brackets(){
         return;
     }
 
-    int sum = 0;
+    long long sum = 0;
     int p = 0;
-    int cntBrackets = 0;
     for (int i = 0; i < 2*n; ++i){
-        if (sum == k && p==0)
-            break;
         if (sum + p <= k) {
             s += "(";
             sum += p;
@@ -35,13 +32,12 @@ void brackets(){
             s += ")";
             p--;
         }
-        cntBrackets++;
-    }
-    for (int i = 0; i < n-cntBrackets; ++i){
-        s+= "()";
-    }
 
-    cout << s << endl;
+    }
+    if (p == 0)
+        cout << s << endl;
+    else
+        cout << impossible << endl;
 }
 
 int main(){
