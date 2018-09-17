@@ -1,0 +1,77 @@
+
+bool dontExist(vector<string> v, map<string, int>& minCosts){
+    for (auto s: v){
+        if (minCosts[s] != INFINITY){
+            return true;
+        }
+    }
+    return false;
+}
+
+void task(){
+    int n, m;
+    cin >> n;
+
+    string s;
+    int a;
+
+    map<string, int> minCosts;
+    minCosts["A"] = INFINITY;
+    minCosts["B"] = INFINITY;
+    minCosts["AB"] = INFINITY;
+    minCosts["AC"] = INFINITY;
+    minCosts["C"] = INFINITY;
+    minCosts["BC"] = INFINITY;
+    minCosts["ABC"] = INFINITY;
+
+    for (int i = 0; i < n; ++i){
+        cin >> a;
+        getline(cin, s);
+        if (s[s.size()-1] == '\r')
+            s = s.substr(1, s.size()-2);
+        else
+            s = s.substr(1, s.size()-1);
+        sort(s.begin(), s.end());
+
+        if (minCosts[s] > a){
+            minCosts[s] = a;
+        }
+    }
+
+    if (!dontExist(vector<string>({"A", "AB", "AC", "ABC"}), minCosts)){
+        cout << -1 << endl;
+        return;
+    }
+
+    if (!dontExist(vector<string>({"B", "AB", "BC", "ABC"}), minCosts)){
+        cout << -1 << endl;
+        return;
+    }
+
+    if (!dontExist(vector<string>({"C", "AC", "BC", "ABC"}), minCosts)){
+        cout << -1 << endl;
+        return;
+    }
+
+    if (minCosts["AB"] > minCosts["A"] + minCosts["B"]){
+        minCosts["AB"] = minCosts["A"] + minCosts["B"];
+    }
+
+    if (minCosts["AC"] > minCosts["A"] + minCosts["C"]){
+        minCosts["AC"] = minCosts["A"] + minCosts["C"];
+    }
+
+    if (minCosts["BC"] > minCosts["B"] + minCosts["C"]){
+        minCosts["BC"] = minCosts["C"] + minCosts["B"];
+    }
+
+    vector<pair<string, string>> pairs = {{"A", "BC"}, {"B", "AC"},
+                                          {"C", "AB"}, {"AB", "AC"}, {"AC", "BC"},
+                                          {"AB", "BC"}};
+
+    for (auto p: pairs) {
+        minCosts["ABC"] = min(minCosts["ABC"], minCosts[p.first] + minCosts[p.second]);
+    }
+
+    cout << minCosts["ABC"] << endl;
+}

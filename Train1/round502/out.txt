@@ -1,0 +1,17 @@
+AB
+BA
+Enter exists
+for s =A minCosts[s] != inf  =0
+for s =AB minCosts[s] != inf  =1
+Enter exists
+for s =B minCosts[s] != inf  =0
+for s =AB minCosts[s] != inf  =1
+Enter exists
+for s =C minCosts[s] != inf  =0
+for s =AC minCosts[s] != inf  =0
+for s =BC minCosts[s] != inf  =0
+for s =ABC minCosts[s] != inf  =0
+-1
+
+=================
+0
