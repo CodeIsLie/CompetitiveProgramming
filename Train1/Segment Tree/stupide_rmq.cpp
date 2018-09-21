@@ -1,3 +1,6 @@
+//
+// Created by admin on 21.09.2018.
+//
 #define FILE2 "stupid_rmq"
 
 #include <set>
@@ -54,7 +57,7 @@ int min (int v, int tl, int tr, int l, int r) {
     return min(
             min (v*2, tl, tm, l, min(r,tm)),
             min (v*2+1, tm+1, tr, max(l,tm+1), r)
-            );
+    );
 }
 
 void task(){
@@ -77,3 +80,5 @@ void task(){
         cout << min(1, 0, n-1, l-1, r-1) << endl;
     }
 }
+
+
