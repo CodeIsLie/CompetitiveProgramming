@@ -18,8 +18,10 @@ int main(){
     freopen("./inp.txt", "r", stdin);
     freopen("./out.txt", "w", stdout);
 #endif
-
-    task();
+    int t;
+    scanf("%d", &t);
+    while (t--)
+        task();
 
 #ifdef TEAM
     cout << "\n=================\n";
@@ -28,74 +30,16 @@ int main(){
     return 0;
 }
 
-
 void task(){
     int n;
-    cin >> n;
+    scanf("%d", &n);
 
-    vector<int> zeroIndices;
-    set<pair<int, int>> negs;
-    set<pair<int, int>> pos;
-
+    long long sum = 0;
     int a;
     for (int i = 0; i < n; ++i){
-        cin >> a;
-        if (a==0)
-            zeroIndices.push_back(i+1);
-        else if (a < 0){
-            negs.emplace(abs(a), i+1);
-        } else{
-            pos.emplace(a, i+1);
-        }
+        scanf("%d", &a);
+        sum = (sum + a*(1+sum) ) % (1000000000+7);
     }
 
-    int ps = pos.size();
-    int ns = negs.size();
-    if (zeroIndices.size() > 1) {
-        for (int i = 0; i < zeroIndices.size() - 1; ++i) {
-            printf("1 %d %d\n", zeroIndices[i], zeroIndices[i + 1]);
-        }
-    }
-
-    if (zeroIndices.size() > 0){
-        if (ns % 2){
-            auto it = negs.begin();
-            printf("1 %d %d\n", it->second, zeroIndices[zeroIndices.size()-1]);
-            negs.erase(it);
-        }
-        if (negs.size() + pos.size() > 0) {
-            printf("2 %d\n", zeroIndices[zeroIndices.size() - 1]);
-        }
-    }
-    else{
-        if (ns % 2){
-            auto it = negs.begin();
-            printf("2 %d\n", it->second);
-            negs.erase(it);
-        }
-    }
-
-    auto it = pos.begin();
-    auto nextIt = it;
-
-    if (pos.size() > 0) {
-        for (int i = 0; i < pos.size() - 1; ++i) {
-            nextIt = next(it);
-            printf("1 %d %d\n", it->second, nextIt->second);
-            it = nextIt;
-        }
-    }
-
-    if (negs.size() > 0) {
-        it = negs.begin();
-        if (pos.size() > 0) {
-            int lastIPos = nextIt->second;
-            printf("1 %d %d\n", lastIPos, it->second);
-        }
-        for (int i = 0; i < negs.size() - 1; ++i) {
-            nextIt = next(it);
-            printf("1 %d %d\n", it->second, nextIt->second);
-            it = nextIt;
-        }
-    }
+    printf("%lld\n", sum);
 }
