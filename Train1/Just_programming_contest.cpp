@@ -31,3 +31,32 @@ void taskJ(){
     }
 }
 
+void taskD(){
+    int t;
+    scanf("%d", &t);
+    while(t--){
+        int n, q;
+        scanf("%d %d\n", &n, &q);
+
+        string s;
+        char stmp[n+1];
+        scanf("%s", stmp);
+        s = stmp;
+
+        counts.assign(n, vector<int>(27, 0));
+        counts[0][s[0] - 'a']++;
+        for (int i = 1; i < n; ++i){
+            for (int j = 0; j < 27; ++j){
+                counts[i][j] = counts[i-1][j];
+            }
+            counts[i][s[i] - 'a']++;
+        }
+
+        int l, r;
+        char c;
+        for (int i = 0; i < q; ++i){
+            scanf("%d %d %c", &l, &r, &c);
+            printf("%d\n", cnt(c, r, n) - cnt(c, l-1, n));
+        }
+    }
+}

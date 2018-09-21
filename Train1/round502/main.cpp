@@ -30,16 +30,41 @@ int main(){
     return 0;
 }
 
-void task(){
-    int n;
-    scanf("%d", &n);
+vector<vector<int>> counts;
 
-    long long sum = 0;
-    int a;
-    for (int i = 0; i < n; ++i){
-        scanf("%d", &a);
-        sum = (sum + a*(1+sum) ) % (1000000000+7);
+int cnt(char c, int r, int n){
+    int fullBlocks = r/n;
+    int modulo = r % n;
+    int result = counts[n-1][c-'a'] * fullBlocks;
+    if (modulo > 0){
+        result += counts[modulo-1][c-'a'];
+    }
+    return result;
+}
+
+void task(){
+    int n, q;
+    scanf("%d %d\n", &n, &q);
+
+    string s;
+    char stmp[n+1];
+    scanf("%s", stmp);
+    s = stmp;
+
+    counts.assign(n, vector<int>(27, 0));
+    counts[0][s[0] - 'a']++;
+    for (int i = 1; i < n; ++i){
+        for (int j = 0; j < 27; ++j){
+            counts[i][j] = counts[i-1][j];
+        }
+        counts[i][s[i] - 'a']++;
     }
 
-    printf("%lld\n", sum);
+    int l, r;
+    char c;
+    for (int i = 0; i < q; ++i){
+        scanf("%d %d %c", &l, &r, &c);
+        printf("%d\n", cnt(c, r, n) - cnt(c, l-1, n));
+    }
+
 }
