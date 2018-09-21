@@ -1,3 +1,7 @@
+//
+// Created by admin on 21.09.2018.
+//
+
 #define FILE2 "rvq"
 
 #include <set>
@@ -58,7 +62,7 @@ int min (int v, int tl, int tr, int l, int r) {
     return min(
             min (v*2, tl, tm, l, min(r,tm)),
             min (v*2+1, tm+1, tr, max(l,tm+1), r)
-            );
+    );
 }
 
 int max (int v, int tl, int tr, int l, int r) {
@@ -95,7 +99,7 @@ void task(){
     a.assign(n+1, 0);
     for (long long i = 1; i <= n; ++i){
         a[i] = (i % 12345) * (i % 12345) % 12345 +
-                (i % 23456) * (i % 23456) * (i % 23456) % 23456;
+               (i % 23456) * (i % 23456) * (i % 23456) % 23456;
     }
 
     tmin.assign(4*n, 0);
