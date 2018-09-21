@@ -1,4 +1,4 @@
-#define TEAM
+// #define TEAM
 
 #include <set>
 #include <vector>
@@ -18,10 +18,7 @@ int main(){
     freopen("./inp.txt", "r", stdin);
     freopen("./out.txt", "w", stdout);
 #endif
-    int t;
-    scanf("%d", &t);
-    while (t--)
-        task();
+    task();
 
 #ifdef TEAM
     cout << "\n=================\n";
@@ -30,41 +27,58 @@ int main(){
     return 0;
 }
 
-vector<vector<int>> counts;
+int uniqes;
 
-int cnt(char c, int r, int n){
-    int fullBlocks = r/n;
-    int modulo = r % n;
-    int result = counts[n-1][c-'a'] * fullBlocks;
-    if (modulo > 0){
-        result += counts[modulo-1][c-'a'];
+bool canCatch(string& s, int n){
+    vector<int> charCnts(128, 0);
+    int cntUniques = 0;
+    for (int i = 0; i < n; ++i){
+        if (!charCnts[s[i]])
+            cntUniques++;
+        charCnts[s[i]]++;
     }
-    return result;
+    if (cntUniques == uniqes)
+        return true;
+
+    for (int i = n; i < s.size(); ++i){
+        charCnts[s[i-n]]--;
+        if (!charCnts[s[i-n]])
+            cntUniques--;
+
+        if (!charCnts[s[i]])
+            cntUniques++;
+        charCnts[s[i]]++;
+
+        if (cntUniques == uniqes)
+            return true;
+    }
+
+    return false;
 }
 
 void task(){
-    int n, q;
-    scanf("%d %d\n", &n, &q);
+    int n;
+    scanf("%d", &n);
+    char c[n];
+    scanf("%s", c);
 
-    string s;
-    char stmp[n+1];
-    scanf("%s", stmp);
-    s = stmp;
+    string s = c;
+    set<int> uniqueChars;
+    for (char c: s)
+        uniqueChars.insert(c);
+    uniqes = uniqueChars.size();
 
-    counts.assign(n, vector<int>(27, 0));
-    counts[0][s[0] - 'a']++;
-    for (int i = 1; i < n; ++i){
-        for (int j = 0; j < 27; ++j){
-            counts[i][j] = counts[i-1][j];
+    int l = 1;
+    int r = s.size();
+    while (l<r){
+        int m = (l+r)/2;
+        if (canCatch(s, m)){
+            r = m;
         }
-        counts[i][s[i] - 'a']++;
+        else{
+            l = m+1;
+        }
     }
 
-    int l, r;
-    char c;
-    for (int i = 0; i < q; ++i){
-        scanf("%d %d %c", &l, &r, &c);
-        printf("%d\n", cnt(c, r, n) - cnt(c, l-1, n));
-    }
-
+    cout << r << endl;
 }
