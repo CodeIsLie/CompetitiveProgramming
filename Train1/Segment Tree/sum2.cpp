@@ -1,3 +1,7 @@
+//
+// Created by Ilya on 23.09.2018.
+//
+
 #define FILE2 "sum2"
 
 #include <set>
