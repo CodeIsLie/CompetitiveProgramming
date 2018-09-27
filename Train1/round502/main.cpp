@@ -1,3 +1,5 @@
+//#define FILE2 "rsq"
+
 #include <set>
 #include <vector>
 #include <iostream>
@@ -6,6 +8,7 @@
 #include <ctime>
 #include <algorithm>
 #include <initializer_list>
+#include <climits>
 
 using namespace std;
 
@@ -15,6 +18,10 @@ int main(){
 #ifdef TEAM
     freopen("./inp.txt", "r", stdin);
     freopen("./out.txt", "w", stdout);
+#endif
+#ifdef FILE2
+    freopen(FILE2".in", "r", stdin);
+    freopen(FILE2".out", "w", stdout);
 #endif
     task();
 
@@ -26,38 +33,26 @@ int main(){
 }
 
 
-
-
 void task(){
-    int n, m, k;
+    int n;
     cin >> n;
 
-    vector<int> ps;
-    ps.assign(n, 0);
-    for (int i = 0; i < n; ++i){
-        cin >> ps[i];
+    vector<int> a;
+    n*=2;
+    a.assign(n, 0);
+    for (int &el: a){
+        cin >> el;
     }
 
-    sort(ps.rbegin(), ps.rend());
-    map<int, int> isPs;
-    isPs[1]
-    long long mult = 1;
-    bool add1= false;
-    for (int p: ps){
-        if (!isPs[p]) {
-            isPs[p] = 1;
-            mult = mult*p % 1000000007;
-        }else
-        if (isPs[p] == 1) {
-            isPs[p] = 2;
-            if (mult % (p-1) != 0)
-                mult = mult*(p-1) % 1000000007;
-            isPs[p-1] = 1;
-        }else{
-            add1 = true;
-        }
-    }
-    mult += (int)add1;
+    sort(a.begin(), a.end());
+    long long mini = LLONG_MAX;
+    for (int i = 0; i < n-1; ++i) {
+        int dx = abs(a[(i+n/2-1) % n] - a[i]);
+        int dy = abs(a[n-1] - a[(i==0)?n/2:0]);
 
-    cout << mult;
+        long long area = 1LL * dx * dy;
+        mini = min(area, mini);
+    }
+
+    cout << mini;
 }
