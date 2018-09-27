@@ -1,4 +1,4 @@
-#define FILE2 "stars"
+//#define FILE2 "inverse"
 
 #include <set>
 #include <vector>
@@ -44,10 +44,10 @@ long long sum (int x, int y, int z)
 {
     //printf("%d %d %d - ", x, y, z);
     long long result = 0;
-    for (; x >= 0; x = (x & (x+1)) - 1)
-        for (; y >= 0; y = (y & (y+1)) - 1)
-            for (; z >= 0; z = (z & (z+1)) - 1)
-                result += t[x][y][z];
+    for (int i = x; i >= 0; i = (i & (i+1)) - 1)
+        for (int j = y; j >= 0; j = (j & (j+1)) - 1)
+            for (int k = z; k >= 0; k = (k & (k+1)) - 1)
+                result += t[i][j][k];
     //printf("%lld \n", result);
     return result;
 }
