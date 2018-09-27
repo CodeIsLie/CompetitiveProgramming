@@ -1,4 +1,4 @@
-//#define FILE2 "stars"
+#define FILE2 "stars"
 
 #include <set>
 #include <vector>
@@ -32,64 +32,71 @@ int main(){
     return 0;
 }
 
-vector<long long> t;
+vector<vector<vector<long long>>> t;
 int n;
 
 void init (int nn)
 {
-    t.assign (nn, 0);
+    t.assign (nn, vector<vector<long long>>(nn, vector<long long>(nn, 0)));
 }
 
-long long sum (long long r)
+long long sum (int x, int y, int z)
 {
+    //printf("%d %d %d - ", x, y, z);
     long long result = 0;
-    for (; r >= 0; r = (r & (r+1)) - 1)
-        result += t[r];
+    for (; x >= 0; x = (x & (x+1)) - 1)
+        for (; y >= 0; y = (y & (y+1)) - 1)
+            for (; z >= 0; z = (z & (z+1)) - 1)
+                result += t[x][y][z];
+    //printf("%lld \n", result);
     return result;
 }
 
-void inc (int i, int x)
+void inc (int x, int y, int z, long long val)
 {
-    for (; i < n; i = (i | (i+1)))
-        t[i] += x;
+    for (int i = x; i < n; i = (i | (i+1)))
+        for (int j = y; j < n; j = (j | (j+1)))
+            for (int k = z; k < n; k = (k | (k+1)))
+                t[i][j][k] += val;
 }
 
-long long sum (int l, int r)
+long long sum (int x, int y, int z, int x1, int y1, int z1)
 {
-    return sum (r) - sum (l-1);
+    return sum(x, y, z) - sum(x1-1, y, z) - sum(x, y1-1, z) - sum(x, y, z1-1)
+            + sum(x, y1-1, z1-1) + sum(x1-1, y, z1-1) + sum(x1-1, y1-1, z) - sum(x1-1, y1-1, z1-1);
 }
 
-void init (vector<int> a)
+void init (vector<vector<vector<long long>>>& a)
 {
     init ((int) a.size());
-    for (unsigned i = 0; i < a.size(); i++)
-        inc (i, a[i]);
+    for (int i = 0; i < a.size(); i++)
+        for (int j = 0; j < a.size(); j++)
+            for (int k = 0; k < a.size(); k++)
+                inc (i, j, k, a[i][j][k]);
 }
 
-vector<int> arr;
+vector<vector<vector<long long>>> stars;
 
 void task(){
     int m;
     scanf("%d", &n);
-    arr.assign(n, 0);
+    stars.assign(n, vector<vector<long long>>(n, vector<long long>(n, 0)));
+    init(stars);
 
-
-    for (int i = 0; i < n; ++i){
-        scanf("%d", &arr[i]);
-    }
-    init(arr);
-
-    int t, x, y;
-    for (int i = 0; i < m; ++i){
-        scanf("%d %d %d", &t, &x, &y);
-        if (t == 0){
-            if (y > 1)
-                printf("%lld\n", sum(x-1, y-1));
-            else
-                printf("%lld\n", sum(x-1));
-        }else{
-            inc(x-1, y-arr[x-1]);
-            arr[x-1] = y;
+    int x, y, z, k;
+    int x1, y1, z1, x2, y2, z2;
+    while (true){
+        scanf("%d", &m);
+        if (m == 3)
+            break;
+        if (m == 1){
+            scanf("%d %d %d %d", &x, &y, &z, &k);
+            inc(x, y, z, k);
+            stars[x][y][z] += k;
+        }else if (m == 2){
+            scanf("%d %d %d %d %d %d", &x1, &y1, &z1, &x2, &y2, &z2);
+            long long cntStars = sum(x2, y2, z2, x1, y1, z1);
+            printf("%lld \n", cntStars);
         }
     }
 }
