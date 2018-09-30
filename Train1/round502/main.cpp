@@ -1,4 +1,4 @@
-#define FILE2 "segmentupdate"
+#define FILE2 "comb"
 
 #include <set>
 #include <vector>
@@ -7,8 +7,8 @@
 #include <map>
 #include <ctime>
 #include <algorithm>
-#include <initializer_list>
 #include <climits>
+#include <list>
 
 using namespace std;
 
@@ -32,68 +32,51 @@ int main(){
     return 0;
 }
 
-vector<long long> tAdd;
-vector<long long> tSum;
-int n;
-
-void init (int nn)
-{
-    tAdd.assign (nn, 0);
-    tSum.assign (nn, 0);
+long long GSD(long long n1, long long n2){
+    if (n2 == 0)
+        return n1;
+    return GSD(n2, n1 % n2);
 }
 
-long long sum (long long r)
-{
-    if (r < 0)
-        return 0;
-    long long result = 0;
-    for(int i=r; i>=0; i=(i&(i+1))-1)
-        result += tSum[i] + tAdd[i]*(i-(i&(i+1))+1);
-    for(int i=r|(r+1); i<n; i|=i+1)
-        result += tAdd[i]*(r-(i&(i+1))+1);
-    return result;
-}
+long long cntCombinations(int n, int k){
+    int k2 = n-k;
+    k = max(k2, k);
 
-void add_range(int r, int d){
-    if(r<0)
-        return;
-    for(int i=r; i>=0; i=(i&(i+1))-1)
-        tAdd[i] += d;
-    for(int i=r|(r+1); i<n; i|=i+1)
-        tSum[i] += d*(r-(i&(i+1))+1);
-}
+    long long mul1 = 1, mul2 = 1;
+    for (int i = k+1; i <= n; ++i){
+        mul1 *= i;
+        mul2 *= (i-k);
+        long long gsd = GSD(mul1, mul2);
+        mul1 /= gsd;
+        mul2 /= gsd;
+    }
 
-void add_range(int l, int r, int d){
-    add_range(r, d);
-    add_range(l-1, -d);
-}
-
-long long get(int ind)
-{
-    return sum(ind) - sum(ind-1);
+    return mul1 / mul2;
 }
 
 void task(){
-    int q;
-    scanf("%d %d\n", &n, &q);
-    vector<long long> arr;
-    arr.resize(n);
-    int k;
-    for (int i = 0; i < n; ++i){
-        scanf("%d", &k);
-        arr[i] = k;
-    }
-    init(n);
+    int n, k;
+    long long p;
+    cin >> n >> k >> p;
 
-    int t, ind, l, r, x;
-    for (int i = 0; i < q; ++i){
-        scanf("%d", &t);
-        if (t == 1){
-            scanf("%d %d %d", &l, &r, &x);
-            add_range(l-1, r-1, x);
-        }else{
-            scanf("%d", &ind);
-            printf("%lld \n", get(ind-1) + arr[ind-1]);
+    long long combs;
+    int remain_n = n;
+    int remain_k = k;
+    while (p != 0) {
+        combs = cntCombinations(remain_n-1, remain_k-1);
+        while (p >= combs) {
+            p -= combs;
+            combs = cntCombinations(--remain_n-1, remain_k-1);
         }
+        remain_n--;
+        remain_k--;
+        cout << n-remain_n << ' ';
+
+        if (remain_k == 0)
+            break;
+    }
+
+    for (int i = n-remain_n+1; i < n-remain_n+1+remain_k; ++i){
+        cout << i << ' ';
     }
 }
