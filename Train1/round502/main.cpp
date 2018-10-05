@@ -1,4 +1,4 @@
-#define FILE2 "colors"
+#define FILE2 "qsort"
 
 #include <set>
 #include <vector>
@@ -33,38 +33,72 @@ int main(){
     return 0;
 }
 
+void qsort(vector<int>& arr, int l, int r){
+    if (l >= r)
+        return;
+    int m = (l+r)/2;
+    qsort(arr, l, m);
+    qsort(arr, m+1, r);
+    vector<int> temp;
+    temp.assign(r-l+1, 0);
+    int li = l;
+    int ri = m+1;
+    int i;
+    for (i = 0; i < r-l+1; ++i){
+        if (arr[li] < arr[ri]){
+            temp[i] = arr[li];
+            li++;
+            if (li > m){
+                ++i;
+                break;
+            }
+
+        }else{
+            temp[i] = arr[ri];
+            ri++;
+            if (ri > r){
+                ++i;
+                break;
+            }
+        }
+    }
+
+    if (ri > r){
+        while (li <= m){
+            temp[i] = arr[li];
+            li++;
+            i++;
+        }
+    }
+    else{
+        while (ri <= r){
+            temp[i] = arr[ri];
+            ri++;
+            i++;
+        }
+    }
+
+    for (i = 0; i < temp.size(); ++i){
+        arr[l+i] = temp[i];
+    }
+
+}
+
 
 void task() {
-    // color ant type of cloth
-    set<pair<int, int>> cloth;
+    int n;
+    scanf("%d", &n);
 
-    for (int i = 0; i < 4; ++i){
-        int n;
-        scanf("%d", &n);
-        int c;
-        for (int j = 0; j < n; ++j){
-            scanf("%d", &c);
-            cloth.emplace(c, i);
-        }
+    vector<int> arr;
+    arr.assign(n, 0);
+    int k;
+    for (int i = 0; i < n; ++i){
+        scanf("%d", &k);
+        arr[i] = k;
     }
 
-    vector<int> best_cloth(4, -1000000);
-    vector<int> cur_cloth(4, - 1000000);
-    int max_difference = INT32_MAX;
-    for (auto p: cloth){
-        int cur_difference = 0;
-        for (int i = 0; i < 4; ++i){
-            if (p.second != i)
-                cur_difference = max(cur_difference, p.first - cur_cloth[i]);
-        }
-        cur_cloth[p.second] = p.first;
-        if (cur_difference < max_difference){
-            best_cloth = cur_cloth;
-            max_difference = cur_difference;
-        }
-    }
-
-    for (auto c: best_cloth){
-        printf("%d ", c);
+    qsort(arr, 0, n-1);
+    for (int i: arr){
+        printf("%d ", i);
     }
 }

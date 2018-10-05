@@ -34,64 +34,54 @@ int main(){
 }
 
 
-void task(){
+void task() {
     int m;
-    cin >> m;
+    scanf("%d", &m);
 
     set<pair<int, pair<int, int>>> scan_line;
     vector<pair<int, int>> segments;
     int l, r;
     int i = 0;
     while(true){
-        cin >> l >> r;
+        scanf("%d %d", &l, &r);
         if (!l && !r)
             break;
-        scan_line.emplace(l, make_pair(1, i));
-        scan_line.emplace(r, make_pair(2, i));
+        scan_line.emplace(l, make_pair(r, i));
         segments.emplace_back(l, r);
         ++i;
     }
+    scan_line.emplace(m+1, make_pair(INT32_MAX, -1));
 
-    vector<pair<int, int>> result_segments;
-    l = 0;
-    r = -1;
-    int cnt_open = 0;
-    int remain_open = 0;
-    for (auto p:scan_line){
-        if (p.second.first == 1){
-            if (p.first > r+1 && remain_open == 0) {
-                remain_open = cnt_open;
+    vector<pair<int, int>> required_segments;
+    int bound = 0;
+    int max = -1;
+    int maxInd = -1;
+    for (auto s: scan_line){
+        if (s.first <= bound){
+            if (s.second.first > max){
+                max = s.second.first;
+                maxInd = s.second.second;
             }
-            if (cnt_open == 0 && p.first > r+1)
-            {
-                cout << "No solution\n";
+        }else{
+            required_segments.push_back(segments[maxInd]);
+            if (max <= bound) {
+                printf("No solution\n");
                 return;
             }
-            cnt_open++;
-        } else{
-            if (p.first > r && remain_open == 0) {
-                remain_open = cnt_open;
-            }
-            if (segments[p.second.second].first <= r+1)
-                remain_open--;
-            if (remain_open == 0){
-                result_segments.push_back(segments[p.second.second]);
-                r = p.first;
-                if (r >= m)
-                    break;
-            }
-            cnt_open--;
+            bound = max;
+            if (bound >= m)
+                break;
         }
     }
 
-    if (r < m)
-    {
-        cout << "No solution\n";
+    if (bound < m) {
+        printf("No solution\n");
         return;
     }
 
-    cout << result_segments.size() << endl;
-    for (auto p: result_segments){
-        cout << p.first << ' ' << p.second << endl;
+    printf("%d \n", required_segments.size());
+    for (auto p: required_segments){
+        printf("%d %d \n", p.first, p.second);
     }
+
 }
