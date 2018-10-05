@@ -1,4 +1,4 @@
-#define FILE2 "qsort"
+//#define FILE2 "sum0"
 
 #include <set>
 #include <vector>
@@ -33,72 +33,28 @@ int main(){
     return 0;
 }
 
-void qsort(vector<int>& arr, int l, int r){
-    if (l >= r)
-        return;
-    int m = (l+r)/2;
-    qsort(arr, l, m);
-    qsort(arr, m+1, r);
-    vector<int> temp;
-    temp.assign(r-l+1, 0);
-    int li = l;
-    int ri = m+1;
-    int i;
-    for (i = 0; i < r-l+1; ++i){
-        if (arr[li] < arr[ri]){
-            temp[i] = arr[li];
-            li++;
-            if (li > m){
-                ++i;
-                break;
-            }
-
-        }else{
-            temp[i] = arr[ri];
-            ri++;
-            if (ri > r){
-                ++i;
-                break;
-            }
-        }
-    }
-
-    if (ri > r){
-        while (li <= m){
-            temp[i] = arr[li];
-            li++;
-            i++;
-        }
-    }
-    else{
-        while (ri <= r){
-            temp[i] = arr[ri];
-            ri++;
-            i++;
-        }
-    }
-
-    for (i = 0; i < temp.size(); ++i){
-        arr[l+i] = temp[i];
-    }
-
-}
-
-
 void task() {
-    int n;
-    scanf("%d", &n);
-
-    vector<int> arr;
-    arr.assign(n, 0);
-    int k;
-    for (int i = 0; i < n; ++i){
-        scanf("%d", &k);
-        arr[i] = k;
+    int n, x, y, a0;
+    cin >> n >> x >> y >> a0;
+    vector<int> as;
+    vector<long long> cumulative;
+    as.assign(n, 0);
+    cumulative.assign(n, 0);
+    as[0] = a0;
+    cumulative[0] = a0;
+    for (int i = 1; i < as.size(); ++i){
+        int a = ((long long)as[i-1]*x + y + (1<<16)) % (1<<16);
+        as[i] = a;
+        cumulative[i] = cumulative[i-1] + a;
     }
 
-    qsort(arr, 0, n-1);
-    for (int i: arr){
-        printf("%d ", i);
+    int m, z, t, b0;
+    cin >> m >> z >> t >> b0;
+    vector<int> bs;
+    bs.assign(n, 0);
+    bs[0] = a0;
+    for (int i = 1; i < bs.size(); ++i){
+        int b = ((long long)bs[i-1]*z + t + (1<<30)) % (1<<30);
+        bs[i] = b;
     }
 }
