@@ -33,7 +33,6 @@ int main(){
     return 0;
 }
 
-
 void task() {
     int m;
     scanf("%d", &m);
@@ -50,36 +49,45 @@ void task() {
         segments.emplace_back(l, r);
         ++i;
     }
-    scan_line.emplace(m+1, make_pair(INT32_MAX, -1));
+    scan_line.emplace(m+1, make_pair(INT_MAX, -1));
 
     vector<pair<int, int>> required_segments;
     int bound = 0;
-    int max = -1;
+    int maxX = -1;
     int maxInd = -1;
     for (auto s: scan_line){
         if (s.first <= bound){
-            if (s.second.first > max){
-                max = s.second.first;
+            if (s.second.first > maxX){
+                maxX = s.second.first;
                 maxInd = s.second.second;
             }
         }else{
             required_segments.push_back(segments[maxInd]);
-            if (max <= bound) {
+            if (maxX <= bound) {
                 printf("No solution\n");
                 return;
             }
-            bound = max;
+            bound = maxX;
             if (bound >= m)
                 break;
+            if (s.first <= bound) {
+                if (s.second.first > maxX) {
+                    maxX = s.second.first;
+                    maxInd = s.second.second;
+                }
+            }
+            else{
+                printf("No solution\n");
+                return;
+            }
         }
     }
-
     if (bound < m) {
         printf("No solution\n");
         return;
     }
 
-    printf("%d \n", required_segments.size());
+    printf("%d \n", (int)required_segments.size());
     for (auto p: required_segments){
         printf("%d %d \n", p.first, p.second);
     }
