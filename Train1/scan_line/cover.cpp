@@ -1,4 +1,4 @@
-// #define FILE2 "cover"
+#define FILE2 "cover"
 
 #include <set>
 #include <vector>
@@ -87,9 +87,9 @@ void task() {
         return;
     }
 
-    printf("%d \n", (int)required_segments.size());
+    printf("%d\n", (int)required_segments.size());
     for (auto p: required_segments){
-        printf("%d %d \n", p.first, p.second);
+        printf("%d %d\n", p.first, p.second);
     }
 
 }
