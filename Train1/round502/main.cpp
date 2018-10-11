@@ -1,4 +1,4 @@
-#define FILE2 "distance"
+#define FILE2 "path_easy"
 
 #include <set>
 #include <vector>
@@ -34,62 +34,64 @@ int main(){
     return 0;
 }
 
-vector<vector<pair<int, int>>> graph;
-vector<int> p;
+struct Edge{
+    int v;
+    int to;
+    long long weight;
+};
 
-long long Dijcstra(int n, int s, int end){
-    vector<long long> distances;
-    distances.assign(n, INT64_MAX);
-    p.assign(n, -1);
+vector<Edge> graph;
+vector<long long> distances;
+
+void bellmanFord(int n, int s){
+    distances.assign(n+1, INT64_MAX);
     distances[s] = 0;
-
-    priority_queue<pair<long long, int>> q;
-    q.emplace(0, s);
-    while (!q.empty()){
-        int v = q.top().second;
-        long long cur_distance = -q.top().first;
-        q.pop();
-        if (cur_distance > distances[v])
-            continue;
-        for (auto edge: graph[v]){
-            int to = edge.first;
-            if (distances[v] + edge.second < distances[to]){
-                distances[to] = distances[v] + edge.second;
-                p[to] = v;
-                q.emplace(-distances[to], to);
+    for (int i = 0; i < n-1; ++i) {
+        for (auto edge: graph) {
+            if (distances[edge.to] - edge.weight > distances[edge.v]) {
+                distances[edge.to] = distances[edge.v] + edge.weight;
             }
         }
     }
 
-    return distances[end];
+
+    vector<long long> newDistances = distances;
+    for (int i = 0; i < n; ++i) {
+        for (auto edge: graph) {
+            if (newDistances[edge.to] - edge.weight > newDistances[edge.v]) {
+                newDistances[edge.to] = newDistances[edge.v] + edge.weight;
+            }
+        }
+    }
+
+    for (int i = 0; i < newDistances.size(); ++i){
+        if (newDistances[i] < distances[i]){
+            distances[i] = INT64_MIN;
+        }
+    }
 }
 
 void task() {
-    int n, m, s, f;
-    cin >> n >> m >> s >> f;
+    int n, m, s;
+    cin >> n >> m >> s;
 
-    graph.resize(n);
     int v, to, weight;
     for (int i = 0; i < m; ++i){
         cin >> v >> to >> weight;
-        graph[v-1].emplace_back(to-1, weight);
-        graph[to-1].emplace_back(v-1, weight);
+        graph.push_back({v, to, weight});
     }
 
-    long long distance = Dijcstra(n, s-1, f-1);
-    cout << ((distance == INT64_MAX)? -1: distance) << endl;
-    v = f-1;
-    vector<int> path;
-    if (distance == INT64_MAX)
-        return;
-    while (v != s-1){
-        path.push_back(v+1);
-        v = p[v];
-    }
+    bellmanFord(n, s);
 
-    path.push_back(s);
-    for (auto it = path.rbegin(); it != path.rend(); ++it){
-        cout << (*it) << ' ';
+    for (int i = 1; i < distances.size(); ++i){
+        long long w = distances[i];
+        if (w == INT64_MAX){
+            cout << "*\n";
+        }
+        else if (w == INT64_MIN){
+            cout << "-\n";
+        }else{
+            cout << w << endl;
+        }
     }
-    cout << endl;
 }
