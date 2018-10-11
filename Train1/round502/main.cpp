@@ -1,4 +1,4 @@
-#define FILE2 "path_easy"
+//#define FILE2 "negcycle"
 
 #include <set>
 #include <vector>
@@ -42,56 +42,64 @@ struct Edge{
 
 vector<Edge> graph;
 vector<long long> distances;
+vector<int> parents;
+const long long ten15 = 1000000000000004;
+const long long INF = INT64_MAX-ten15;
 
-void bellmanFord(int n, int s){
-    distances.assign(n+1, INT64_MAX);
-    distances[s] = 0;
-    for (int i = 0; i < n-1; ++i) {
-        for (auto edge: graph) {
-            if (distances[edge.to] - edge.weight > distances[edge.v]) {
-                distances[edge.to] = distances[edge.v] + edge.weight;
-            }
-        }
-    }
-
-
-    vector<long long> newDistances = distances;
+void bellmanFord(int n){
+    distances.assign(n, 0);
+    parents.assign(n, -1);
+    int v_neg;
     for (int i = 0; i < n; ++i) {
+        v_neg = -1;
         for (auto edge: graph) {
-            if (newDistances[edge.to] - edge.weight > newDistances[edge.v]) {
-                newDistances[edge.to] = newDistances[edge.v] + edge.weight;
-            }
+            //if (distances[edge.v] < INF)
+                if (distances[edge.to] > distances[edge.v] + edge.weight) {
+                    distances[edge.to] = distances[edge.v] + edge.weight;
+                    parents[edge.to] = edge.v;
+                    v_neg = edge.to;
+                }
         }
     }
 
-    for (int i = 0; i < newDistances.size(); ++i){
-        if (newDistances[i] < distances[i]){
-            distances[i] = INT64_MIN;
-        }
+    if (v_neg == -1){
+        cout << "NO\n";
+        return;
     }
+
+    cout << "YES\n";
+    vector<int> path;
+    int v = v_neg;
+    for (int i=0; i<n; ++i)
+        v = parents[v];
+
+    int start_of_cycle = v;
+    v = parents[start_of_cycle];
+    while (v != start_of_cycle){
+        path.push_back(v);
+        v = parents[v];
+    }
+    path.push_back(start_of_cycle);
+    reverse(path.begin(), path.end());
+
+    cout << path.size()<< endl;
+    for (int v: path){
+        cout << v+1 << " ";
+    }
+    cout << endl;
 }
 
 void task() {
-    int n, m, s;
-    cin >> n >> m >> s;
+    int n;
+    cin >> n;
 
-    int v, to, weight;
-    for (int i = 0; i < m; ++i){
-        cin >> v >> to >> weight;
-        graph.push_back({v, to, weight});
-    }
-
-    bellmanFord(n, s);
-
-    for (int i = 1; i < distances.size(); ++i){
-        long long w = distances[i];
-        if (w == INT64_MAX){
-            cout << "*\n";
-        }
-        else if (w == INT64_MIN){
-            cout << "-\n";
-        }else{
-            cout << w << endl;
+    int  weight;
+    for (int i = 0; i < n; ++i){
+        for (int j = 0; j < n; ++j) {
+            cin >> weight;
+            if (i != j && weight != 100000)
+                graph.push_back({i, j, weight});
         }
     }
+    bellmanFord(n);
 }
