@@ -1,4 +1,4 @@
-//#define FILE2 "path_easy"
+#define FILE2 "path"
 
 #include <set>
 #include <vector>
@@ -34,57 +34,56 @@ int main(){
     return 0;
 }
 
-struct Edge{
-    int v;
-    int to;
-    long long weight;
-};
-
-vector<Edge> graph;
-vector<long long> distances;vector<int> used;
+vector<vector<pair<int, long long>>> graph;
+vector<long long> distances;
+vector<char> used;
 const long long ten15 = 1000000000000004;
+const long long ten18 = -2000000000000000004;
 const long long INF = INT64_MAX-ten15;
+const long long NEG_INF = ten18;
 
-void DFS(int v, int n){
+void DFS(int v){
     distances[v] = INT64_MIN;
     used[v] = 1;
-    for (auto edge: graph){
-
+    for (auto edge: graph[v]){
+        if (!used[edge.first]){
+            DFS(edge.first);
+        }
     }
 }
 
 void bellmanFord(int n, int s){
-    vector<char> used;
     used.assign(n+1, 0);
     distances.assign(n+1, INF);
     distances[s] = 0;
-    used[s] = 1;
+    //used[s] = 1;
     for (int i = 0; i < n-1; ++i) {
-        //vector<long long> temp_distances = distances;
-        for (auto edge: graph) {
-            if (used[edge.v] && distances[edge.to] - edge.weight > distances[edge.v]) {
-                distances[edge.to] = distances[edge.v] + edge.weight;
-                used[edge.to] = 1;
+        for (int v = 1; v < graph.size(); ++v) {
+            for (auto edge: graph[v]){
+                if (distances[v] < INF)
+                    if (distances[edge.first] - edge.second > distances[v]) {
+                        distances[edge.first] = max(NEG_INF+100, distances[v] + edge.second);
+                    }
             }
         }
-        //copy(temp_distances.begin(), temp_distances.end(), distances.begin());
     }
 
     vector<long long> newDistances = distances;
     for (int i = 0; i < n; ++i) {
-        //vector<long long> temp_distances = newDistances;
-        for (auto edge: graph) {
-            if (used[edge.v] && newDistances[edge.to] - edge.weight > newDistances[edge.v]) {
-                newDistances[edge.to] = newDistances[edge.v] + edge.weight;
+        for (int v = 1; v < graph.size(); ++v) {
+            for (auto edge: graph[v]){
+                if (newDistances[v] < INF)
+                    if (newDistances[edge.first] - edge.second > newDistances[v]) {
+                        newDistances[edge.first] = max(NEG_INF, newDistances[v] + edge.second);
+                    }
             }
         }
-        //newDistances = temp_distances;
     }
 
     used.assign(n+1, 0);
     for (int i = 0; i < n+1; ++i){
         if (newDistances[i] < distances[i]){
-            DFS(i, n);
+            DFS(i);
         }
     }
 }
@@ -95,9 +94,10 @@ void task() {
 
     int v, to;
     long long weight;
+    graph.resize(n+1);
     for (int i = 0; i < m; ++i){
         cin >> v >> to >> weight;
-        graph.push_back({v, to, weight});
+        graph[v].emplace_back(to, weight);
     }
 
     bellmanFord(n, s);

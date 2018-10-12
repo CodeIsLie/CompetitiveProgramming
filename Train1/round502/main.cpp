@@ -1,4 +1,4 @@
-//#define FILE2 "negcycle"
+#define FILE2 "path"
 
 #include <set>
 #include <vector>
@@ -34,72 +34,83 @@ int main(){
     return 0;
 }
 
-struct Edge{
-    int v;
-    int to;
-    long long weight;
-};
-
-vector<Edge> graph;
+vector<vector<pair<int, long long>>> graph;
 vector<long long> distances;
-vector<int> parents;
+vector<char> used;
 const long long ten15 = 1000000000000004;
+const long long ten18 = -2000000000000000004;
 const long long INF = INT64_MAX-ten15;
+const long long NEG_INF = ten18;
 
-void bellmanFord(int n){
-    distances.assign(n, 0);
-    parents.assign(n, -1);
-    int v_neg;
-    for (int i = 0; i < n; ++i) {
-        v_neg = -1;
-        for (auto edge: graph) {
-            //if (distances[edge.v] < INF)
-            if (distances[edge.to] > distances[edge.v] + edge.weight) {
-                distances[edge.to] = distances[edge.v] + edge.weight;
-                parents[edge.to] = edge.v;
-                v_neg = edge.to;
+void DFS(int v){
+    distances[v] = INT64_MIN;
+    used[v] = 1;
+    for (auto edge: graph[v]){
+        if (!used[edge.first]){
+            DFS(edge.first);
+        }
+    }
+}
+
+void bellmanFord(int n, int s){
+    used.assign(n+1, 0);
+    distances.assign(n+1, INF);
+    distances[s] = 0;
+    //used[s] = 1;
+    for (int i = 0; i < n-1; ++i) {
+        for (int v = 1; v < graph.size(); ++v) {
+            for (auto edge: graph[v]){
+                if (distances[v] < INF)
+                    if (distances[edge.first] - edge.second > distances[v]) {
+                        distances[edge.first] = max(NEG_INF+100, distances[v] + edge.second);
+                    }
             }
         }
     }
 
-    if (v_neg == -1){
-        cout << "NO\n";
-        return;
+    vector<long long> newDistances = distances;
+    for (int i = 0; i < n; ++i) {
+        for (int v = 1; v < graph.size(); ++v) {
+            for (auto edge: graph[v]){
+                if (newDistances[v] < INF)
+                    if (newDistances[edge.first] - edge.second > newDistances[v]) {
+                        newDistances[edge.first] = max(NEG_INF, newDistances[v] + edge.second);
+                    }
+            }
+        }
     }
 
-    cout << "YES\n";
-    vector<int> path;
-    int v = v_neg;
-    for (int i=0; i<n; ++i)
-        v = parents[v];
-
-    int start_of_cycle = v;
-    v = parents[start_of_cycle];
-    while (v != start_of_cycle){
-        path.push_back(v);
-        v = parents[v];
+    used.assign(n+1, 0);
+    for (int i = 0; i < n+1; ++i){
+        if (newDistances[i] < distances[i]){
+            DFS(i);
+        }
     }
-    path.push_back(start_of_cycle);
-    reverse(path.begin(), path.end());
-
-    cout << path.size()<< endl;
-    for (int v: path){
-        cout << v+1 << " ";
-    }
-    cout << endl;
 }
 
 void task() {
-    int n;
-    cin >> n;
+    int n, m, s;
+    cin >> n >> m >> s;
 
-    int  weight;
-    for (int i = 0; i < n; ++i){
-        for (int j = 0; j < n; ++j) {
-            cin >> weight;
-            if (weight != 100000)
-                graph.push_back({i, j, weight});
+    int v, to;
+    long long weight;
+    graph.resize(n+1);
+    for (int i = 0; i < m; ++i){
+        cin >> v >> to >> weight;
+        graph[v].emplace_back(to, weight);
+    }
+
+    bellmanFord(n, s);
+
+    for (int i = 1; i < distances.size(); ++i){
+        long long w = distances[i];
+        if (w == INF){
+            cout << "*\n";
+        }
+        else if (w == INT64_MIN){
+            cout << "-\n";
+        }else{
+            cout << w << endl;
         }
     }
-    bellmanFord(n);
 }
