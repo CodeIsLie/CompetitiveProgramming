@@ -41,9 +41,17 @@ struct Edge{
 };
 
 vector<Edge> graph;
-vector<long long> distances;
+vector<long long> distances;vector<int> used;
 const long long ten15 = 1000000000000004;
 const long long INF = INT64_MAX-ten15;
+
+void DFS(int v, int n){
+    distances[v] = INT64_MIN;
+    used[v] = 1;
+    for (auto edge: graph){
+
+    }
+}
 
 void bellmanFord(int n, int s){
     vector<char> used;
@@ -73,9 +81,10 @@ void bellmanFord(int n, int s){
         //newDistances = temp_distances;
     }
 
+    used.assign(n+1, 0);
     for (int i = 0; i < n+1; ++i){
         if (newDistances[i] < distances[i]){
-            distances[i] = INT64_MIN;
+            DFS(i, n);
         }
     }
 }
