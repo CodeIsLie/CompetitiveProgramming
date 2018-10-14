@@ -32,37 +32,54 @@ int main(){
     return 0;
 }
 
-string name_change(string s){
-    size_t ind = 0;
-    while (true){
-        ind = s.find('u', ind);
-        if (ind == string:: npos)
-            break;
-        s.replace(ind, 1, "oo");
-    }
-
-    while (true){
-        ind = 0;
-        ind = s.find("kh", ind);
-        if (ind == string:: npos)
-            break;
-        s.replace(ind, 2, "h");
-    }
-    return s;
-}
-
 void task() {
-    int n;
+    int n, m;
     cin >> n;
-    string s;
-    set<string> names;
-    for (int i = 0; i < n; ++i ){
-        cin >> s;
-        s = name_change(s);
-        names.insert(s);
-        //cout << s << endl;
+    string word;
+    cin >> word;
+    cin >> m;
+
+    vector<string> words;
+    words.resize(m);
+    for (int i = 0; i < m; ++i){
+        cin >> words[i];
     }
 
+    map<char, int> matches;
+    for (auto w: words){
+        bool b = true;
+        set<char> chars;
+        for (int i = 0; i < w.size(); ++i){
+            char c = w[i];
+            if (word[i] == '*'){
+                if (word.find(c) != string::npos) {
+                    m--;
+                    b = false;
+                    break;
+                }
+            }
+            else{
+                if (word[i] != c){
+                    m--;
+                    b = false;
+                    break;
+                }
+            }
+            if (word[i] == '*' && word.find(c) == string::npos){
+                chars.insert(c);
+            }
+        }
+        if (b)
+            for (char c: chars){
+                matches[c]++;
+            }
+    }
 
-    cout << names.size() << endl;
+    int cnt_letters = 0;
+    for (auto match: matches){
+        if (match.second == m){
+            cnt_letters ++;
+        }
+    }
+    cout << cnt_letters << endl;
 }
