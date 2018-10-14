@@ -1,5 +1,3 @@
-#define FILE2 "path"
-
 #include <set>
 #include <vector>
 #include <iostream>
@@ -34,83 +32,37 @@ int main(){
     return 0;
 }
 
-vector<vector<pair<int, long long>>> graph;
-vector<long long> distances;
-vector<char> used;
-const long long ten15 = 1000000000000004;
-const long long ten18 = -2000000000000000004;
-const long long INF = INT64_MAX-ten15;
-const long long NEG_INF = ten18;
-
-void DFS(int v){
-    distances[v] = INT64_MIN;
-    used[v] = 1;
-    for (auto edge: graph[v]){
-        if (!used[edge.first]){
-            DFS(edge.first);
-        }
-    }
-}
-
-void bellmanFord(int n, int s){
-    used.assign(n+1, 0);
-    distances.assign(n+1, INF);
-    distances[s] = 0;
-    //used[s] = 1;
-    for (int i = 0; i < n-1; ++i) {
-        for (int v = 1; v < graph.size(); ++v) {
-            for (auto edge: graph[v]){
-                if (distances[v] < INF)
-                    if (distances[edge.first] - edge.second > distances[v]) {
-                        distances[edge.first] = max(NEG_INF+100, distances[v] + edge.second);
-                    }
-            }
-        }
+string name_change(string s){
+    size_t ind = 0;
+    while (true){
+        ind = s.find('u', ind);
+        if (ind == string:: npos)
+            break;
+        s.replace(ind, 1, "oo");
     }
 
-    vector<long long> newDistances = distances;
-    for (int i = 0; i < n; ++i) {
-        for (int v = 1; v < graph.size(); ++v) {
-            for (auto edge: graph[v]){
-                if (newDistances[v] < INF)
-                    if (newDistances[edge.first] - edge.second > newDistances[v]) {
-                        newDistances[edge.first] = max(NEG_INF, newDistances[v] + edge.second);
-                    }
-            }
-        }
+    while (true){
+        ind = 0;
+        ind = s.find("kh", ind);
+        if (ind == string:: npos)
+            break;
+        s.replace(ind, 2, "h");
     }
-
-    used.assign(n+1, 0);
-    for (int i = 0; i < n+1; ++i){
-        if (newDistances[i] < distances[i]){
-            DFS(i);
-        }
-    }
+    return s;
 }
 
 void task() {
-    int n, m, s;
-    cin >> n >> m >> s;
-
-    int v, to;
-    long long weight;
-    graph.resize(n+1);
-    for (int i = 0; i < m; ++i){
-        cin >> v >> to >> weight;
-        graph[v].emplace_back(to, weight);
+    int n;
+    cin >> n;
+    string s;
+    set<string> names;
+    for (int i = 0; i < n; ++i ){
+        cin >> s;
+        s = name_change(s);
+        names.insert(s);
+        //cout << s << endl;
     }
 
-    bellmanFord(n, s);
 
-    for (int i = 1; i < distances.size(); ++i){
-        long long w = distances[i];
-        if (w == INF){
-            cout << "*\n";
-        }
-        else if (w == INT64_MIN){
-            cout << "-\n";
-        }else{
-            cout << w << endl;
-        }
-    }
+    cout << names.size() << endl;
 }
