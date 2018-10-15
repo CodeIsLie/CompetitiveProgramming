@@ -32,54 +32,28 @@ int main(){
     return 0;
 }
 
+struct Edge{
+    int to;
+    int ind;
+    int type;
+};
+
 void task() {
-    int n, m;
-    cin >> n;
-    string word;
-    cin >> word;
-    cin >> m;
+    int n, m, s;
+    cin >> n >> m >> s;
 
-    vector<string> words;
-    words.resize(m);
+    vector<vector<Edge>> graph;
+    graph.resize(n);
+    map<int, char> orientation;
+    int t, u ,v;
     for (int i = 0; i < m; ++i){
-        cin >> words[i];
-    }
-
-    map<char, int> matches;
-    for (auto w: words){
-        bool b = true;
-        set<char> chars;
-        for (int i = 0; i < w.size(); ++i){
-            char c = w[i];
-            if (word[i] == '*'){
-                if (word.find(c) != string::npos) {
-                    m--;
-                    b = false;
-                    break;
-                }
-            }
-            else{
-                if (word[i] != c){
-                    m--;
-                    b = false;
-                    break;
-                }
-            }
-            if (word[i] == '*' && word.find(c) == string::npos){
-                chars.insert(c);
-            }
-        }
-        if (b)
-            for (char c: chars){
-                matches[c]++;
-            }
-    }
-
-    int cnt_letters = 0;
-    for (auto match: matches){
-        if (match.second == m){
-            cnt_letters ++;
+        cin >> t >> u >> v;
+        if ( t == 1 ){
+            graph[u].push_back({v, i, 1});
+        }else{
+            orientation[i] = 0;
+            graph[u].push_back({v, i, 2});
+            graph[v].push_back({u, i, 2});
         }
     }
-    cout << cnt_letters << endl;
 }
