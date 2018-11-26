@@ -32,41 +32,38 @@ int main(){
     return 0;
 }
 
-void task(){
+int n, m;
+
+long long to_code(int x, int y){
+    return x*n + y;
+}
+
+
+void task() {
     int n;
     cin >> n;
-    vector<long long> a(n);
-    int max_n = 0;
-    for (auto& el: a){
-        cin >> el;
-        max_n = max(max_n, (int)el);
-    }
-    long long lnum = 1000000007;
 
-    vector<long long> divisors(max_n+1, 0);
-    divisors[1] = 1;
-    long long cnt_divs = 0;
-    for (int i = 1; i < n; ++i){
-        vector<long long> inc_n;
-        for (int j = 1; j*j <= min((long long)(i+1)*(i+1), a[i]); ++j){
-            if (a[i] % j == 0){
-//                cnt_divs = (cnt_divs + divisors[j-1]) % lnum;
-//                if (j != a[i]/j && a[i]/j <= i+1)
-//                    cnt_divs = (cnt_divs + divisors[a[i]/j-1]) % lnum;
-                inc_n.push_back(j);
-                if (a[i]/j <= i+1 && a[i]/j != j)
-                    inc_n.push_back(a[i]/j);
-            }
-        }
-        sort(inc_n.begin(), inc_n.end());
-        reverse(inc_n.begin(), inc_n.end());
-        for (auto& inc: inc_n)
-            divisors[inc]= (divisors[inc] + divisors[inc-1]) % lnum;
-        divisors[1]++;
+    multiset<double> h;
+    double max_n;
+    double min_n;
+    int a;
+    for (int i = 0; i < n; ++i){
+        cin >> a;
+        h.insert(a);
     }
-    for (auto div: divisors){
-        cnt_divs += div;
+    set<double> deleted;
+    max_n = *prev(h.end());
+    min_n = *h.begin();
+    double k = 1.0*min_n/max_n;
+    for (int i = 0; i < n-1; ++i){
+        double del = *prev(h.end());
+        deleted.insert(1.0*del/2);
+        h.erase(prev(h.end()));
+
+        min_n = min(*deleted.begin(), *h.begin());
+        max_n = max(*prev(deleted.end()), *prev(h.end()));
+        double new_k = min_n / max_n;
+        k = max(k, new_k);
     }
-    cnt_divs = cnt_divs % lnum;
-    cout << cnt_divs << endl;
+    printf("%.10f",k);
 }
