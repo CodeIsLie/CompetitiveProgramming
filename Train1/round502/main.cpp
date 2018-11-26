@@ -23,7 +23,11 @@ int main(){
     freopen(FILE2".in", "r", stdin);
     freopen(FILE2".out", "w", stdout);
 #endif
-    task();
+    int t;
+    cin >> t;
+    while (t--) {
+        task();
+    }
 
 #ifdef TEAM
     cout << "\n=================\n";
@@ -32,38 +36,54 @@ int main(){
     return 0;
 }
 
-int n, m;
 
-long long to_code(int x, int y){
-    return x*n + y;
+void minimumBribes(vector<int> q) {
+    int n = q.size();
+    for (int i = 0; i < n; ++i) {
+        if (q[i] > i + 3) {
+            cout << "Too chaotic\n";
+            return;
+        }
+    }
+
+    int swaps = 0;
+    int cur = 1;
+    int next = cur+1;
+    vector<char> used(n+1);
+    for (int i = 0; i < q.size()-1; ++i){
+        used[q[i]] = 1;
+        if (q[i] != cur) {
+            swaps++;
+            if (q[i] != next) {
+                swaps++;
+            }else{
+                for (int j = next + 1; j <= n; ++j) {
+                    if (used[j] == 0) {
+                        next = j;
+                        break;
+                    }
+                }
+            }
+        }
+        else {
+            cur = next;
+            for (int j = next + 1; j <= n; ++j) {
+                if (used[j] == 0) {
+                    next = j;
+                    break;
+                }
+            }
+        }
+    }
+
+    cout << swaps << endl;
 }
 
-
-void task() {
+void task(){
     int n;
     cin >> n;
-
-    multiset<double> h;
-    double max_n;
-    double min_n;
-    int a;
-    for (int i = 0; i < n; ++i){
-        cin >> a;
-        h.insert(a);
-    }
-    set<double> deleted;
-    max_n = *prev(h.end());
-    min_n = *h.begin();
-    double k = 1.0*min_n/max_n;
-    for (int i = 0; i < n-1; ++i){
-        double del = *prev(h.end());
-        deleted.insert(1.0*del/2);
-        h.erase(prev(h.end()));
-
-        min_n = min(*deleted.begin(), *h.begin());
-        max_n = max(*prev(deleted.end()), *prev(h.end()));
-        double new_k = min_n / max_n;
-        k = max(k, new_k);
-    }
-    printf("%.10f",k);
+    vector<int> q(n);
+    for (int i = 0; i < n; ++i)
+        cin >> q[i];
+    minimumBribes(q);
 }
