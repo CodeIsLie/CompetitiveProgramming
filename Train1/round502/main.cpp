@@ -23,11 +23,7 @@ int main(){
     freopen(FILE2".in", "r", stdin);
     freopen(FILE2".out", "w", stdout);
 #endif
-    int t;
-    cin >> t;
-    while (t--) {
-        task();
-    }
+    task();
 
 #ifdef TEAM
     cout << "\n=================\n";
@@ -36,54 +32,18 @@ int main(){
     return 0;
 }
 
-
-void minimumBribes(vector<int> q) {
-    int n = q.size();
-    for (int i = 0; i < n; ++i) {
-        if (q[i] > i + 3) {
-            cout << "Too chaotic\n";
-            return;
-        }
-    }
-
-    int swaps = 0;
-    int cur = 1;
-    int next = cur+1;
-    vector<char> used(n+1);
-    for (int i = 0; i < q.size()-1; ++i){
-        used[q[i]] = 1;
-        if (q[i] != cur) {
-            swaps++;
-            if (q[i] != next) {
-                swaps++;
-            }else{
-                for (int j = next + 1; j <= n; ++j) {
-                    if (used[j] == 0) {
-                        next = j;
-                        break;
-                    }
-                }
-            }
-        }
-        else {
-            cur = next;
-            for (int j = next + 1; j <= n; ++j) {
-                if (used[j] == 0) {
-                    next = j;
-                    break;
-                }
-            }
-        }
-    }
-
-    cout << swaps << endl;
-}
-
 void task(){
     int n;
     cin >> n;
-    vector<int> q(n);
-    for (int i = 0; i < n; ++i)
-        cin >> q[i];
-    minimumBribes(q);
+    vector<int> citizens(n);
+
+    int sum = 0;
+
+    int c;
+    for (int floor = 0; floor < n; ++floor){
+        cin >> c;
+        sum += 4*c*floor;
+    }
+
+    cout << sum;
 }
