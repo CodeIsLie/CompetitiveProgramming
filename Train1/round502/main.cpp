@@ -34,16 +34,33 @@ int main(){
 
 void task(){
     int n;
-    cin >> n;
-    vector<int> citizens(n);
+    long long s;
+    cin >> n >> s;
 
-    int sum = 0;
-
-    int c;
-    for (int floor = 0; floor < n; ++floor){
-        cin >> c;
-        sum += 4*c*floor;
+    long long sum = 0;
+    vector<int> volume(n);
+    for (int &vol: volume){
+        cin >> vol;
+        sum += vol;
     }
 
-    cout << sum;
+    if (sum < s){
+        cout << -1;
+        return;
+    }
+
+    sort(volume.begin(), volume.end());
+    sum = 0;
+    int volume_min = volume.front();
+    for (int i = 0; i < volume.size(); ++i){
+        int remove = volume[i] - volume_min;
+        volume[i] -= remove;
+        sum += remove;
+    }
+
+    if (sum < s){
+        volume_min -= (s - sum) / n + ((s - sum) % n != 0);
+    }
+
+    cout << volume_min;
 }
