@@ -32,35 +32,57 @@ int main(){
     return 0;
 }
 
+vector<vector<pair<int, int>>> graph;
+vector<char> used;
+vector<int> fuels;
+vector<long long> paths;
+
+void DFS(int v){
+    used[v] = 1;
+
+    for (auto edge: graph[v]){
+        int to = edge.first;
+        if (!used[to]){
+            DFS(to);
+        }
+    }
+
+    long long max_path = 0;
+    for (auto edge: graph[v]){
+        int to = edge.first;
+        long long weight = edge.second;
+        if (fuels[to] + weight > max_path){
+            max_path = fuels[to] + weight;
+        }
+    }
+    paths[v] = fuels[v] + max_path;
+}
+
+long long find_max_path(int n){
+    long long max_path = fuels[0];
+    // find 2 maximal paths
+    for (int i = 0; i < n; ++i){
+
+    }
+    return max_path;
+}
+
 void task(){
     int n;
-    long long s;
-    cin >> n >> s;
-
-    long long sum = 0;
-    vector<int> volume(n);
-    for (int &vol: volume){
-        cin >> vol;
-        sum += vol;
+    cin >> n;
+    fuels.resize(n);
+    for (auto& f: fuels){
+        cin >> f;
     }
 
-    if (sum < s){
-        cout << -1;
-        return;
+    int u, v, c;
+    for (int i = 0; i < n; ++i){
+        cin >> u >> v >> c;
+        graph[u-1].emplace_back(v-1, -c);
+        graph[v-1].emplace_back(u-1, -c);
     }
 
-    sort(volume.begin(), volume.end());
-    sum = 0;
-    int volume_min = volume.front();
-    for (int i = 0; i < volume.size(); ++i){
-        int remove = volume[i] - volume_min;
-        volume[i] -= remove;
-        sum += remove;
-    }
-
-    if (sum < s){
-        volume_min -= (s - sum) / n + ((s - sum) % n != 0);
-    }
-
-    cout << volume_min;
+    paths.assign(n, 0);
+    used.assign(n, 0);
+    DFS(0);
 }
