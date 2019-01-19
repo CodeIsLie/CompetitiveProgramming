@@ -32,39 +32,24 @@ int main(){
     return 0;
 }
 
+long long funny_level(int n, int k){
+    long long cnt_members = n/k;
+    long long last_member = (n+1-k);
+    return (1 + last_member) * cnt_members / 2;
+}
+
 void task(){
     int n;
     cin >> n;
-    int x, y;
 
-    set<pair<int, int>> coords;
-    for (int i = 0; i < n; ++i){
-        cin >> x >> y;
-        coords.emplace(x, y);
-    }
-
-    vector<pair<int, int>> hints(n);
-    for (int i = 0; i < n; ++i){
-        cin >> x >> y;
-        hints[i] = make_pair(x, y);
-    }
-
-    //
-    for (auto& h: hints){
-        int t_x = coords.begin()->first + h.first;
-        int t_y = coords.begin()->second + h.second;
-        bool b = true;
-        for (auto& hint: hints){
-            x = t_x - hint.first;
-            y = t_y - hint.second;
-            if (coords.find(make_pair(x, y)) == coords.end()){
-                b = false;
-                break;
-            }
+    set<long long> members;
+    for (int i = 1; i*i <= n; ++i){
+        if (n % i == 0){
+            members.insert(funny_level(n, i));
+            members.insert(funny_level(n, n/i));
         }
-        if (b) {
-            cout << t_x << " " << t_y << endl;
-            break;
-        }
+    }
+    for (auto m: members){
+        cout << m << " ";
     }
 }
