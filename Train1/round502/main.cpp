@@ -33,9 +33,38 @@ int main(){
 }
 
 void task(){
-    int y,b,r;
-    cin >> y >> b >> r;
-    b-=1;
-    r-=2;
-    cout << min(y, min(b, r)) * 3 + 3;
+    int n;
+    cin >> n;
+    int x, y;
+
+    set<pair<int, int>> coords;
+    for (int i = 0; i < n; ++i){
+        cin >> x >> y;
+        coords.emplace(x, y);
+    }
+
+    vector<pair<int, int>> hints(n);
+    for (int i = 0; i < n; ++i){
+        cin >> x >> y;
+        hints[i] = make_pair(x, y);
+    }
+
+    //
+    for (auto& h: hints){
+        int t_x = coords.begin()->first + h.first;
+        int t_y = coords.begin()->second + h.second;
+        bool b = true;
+        for (auto& hint: hints){
+            x = t_x - hint.first;
+            y = t_y - hint.second;
+            if (coords.find(make_pair(x, y)) == coords.end()){
+                b = false;
+                break;
+            }
+        }
+        if (b) {
+            cout << t_x << " " << t_y << endl;
+            break;
+        }
+    }
 }
