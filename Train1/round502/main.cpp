@@ -32,24 +32,29 @@ int main(){
     return 0;
 }
 
-long long funny_level(int n, int k){
-    long long cnt_members = n/k;
-    long long last_member = (n+1-k);
-    return (1 + last_member) * cnt_members / 2;
-}
 
 void task(){
     int n;
     cin >> n;
 
-    set<long long> members;
-    for (int i = 1; i*i <= n; ++i){
-        if (n % i == 0){
-            members.insert(funny_level(n, i));
-            members.insert(funny_level(n, n/i));
-        }
+    long long prime = 998244353;
+
+    vector<long long> factorial(n);
+    vector<long long> rev_factorial(n);
+    long long sum = 0;
+
+    factorial[0] = 1;
+    rev_factorial[0] = n;
+    for (int i = 2; i <= n; ++i){
+        factorial[i-1] = (factorial[i-2] * i) % prime;
+        rev_factorial[i-1] = (rev_factorial[i-2] * (n - i + 1)) % prime;
     }
-    for (auto m: members){
-        cout << m << " ";
+
+    sum = factorial[n-1];
+    for (int i = 1; i < n-1; ++i){
+        long long addition = (factorial[n-1-i] - 1) * rev_factorial[i-1] % prime;
+        sum = (sum + addition) % prime;
     }
+
+    cout << sum << endl;
 }
